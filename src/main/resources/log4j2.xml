@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+
+	<Properties>
+		<Property name="pattern">%d{dd/MM/yyyy HH:mm:ss,SSS} %-5p [%t] - %c{1}: %m%n</Property>
+	</Properties>
+
+	<Appenders>
+
+		<RollingFile name="fileAppender" append="true" fileName="logs/octane.log"
+					 filePattern="logs/octane-%i.log">
+			<PatternLayout pattern="${pattern}"/>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="2MB"/>
+			</Policies>
+			<DefaultRolloverStrategy max="10"/>
+		</RollingFile>
+		<Async name="asyncFileAppender">
+			<AppenderRef ref="fileAppender"/>
+		</Async>
+
+		<Console name="consoleAppender" target="SYSTEM_OUT">
+			<PatternLayout pattern="${pattern}"/>
+		</Console>
+
+	</Appenders>
+
+	<Loggers>
+		<Root level="info" additivity="true">
+			<AppenderRef ref="consoleAppender"/>
+			<AppenderRef ref="asyncFileAppender"/>
+		</Root>
+	</Loggers>
+
+</Configuration>
