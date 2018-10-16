@@ -7,8 +7,8 @@
 
 	<Appenders>
 
-		<RollingFile name="fileAppender" append="true" fileName="logs/octane.log"
-					 filePattern="logs/octane-%i.log">
+		<RollingFile name="fileAppender" append="true" fileName="logs/main.log"
+					 filePattern="logs/main-%i.log">
 			<PatternLayout pattern="${pattern}"/>
 			<Policies>
 				<SizeBasedTriggeringPolicy size="2MB"/>
