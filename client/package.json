@@ -1,0 +1,45 @@
+{
+  "name": "websocket-verifier",
+  "version": "1.0.0-snapshot",
+  "description": "server/client pair to verify websocket is doable in the specific network setup",
+  "keywords": [
+    "websocket",
+    "network",
+    "load",
+    "balancer",
+    "proxy",
+    "reverse",
+    "connectivity",
+    "verification",
+    "verifier"
+  ],
+  "homepage": "https://github.com/gullerya/websocket-verifie",
+  "bugs": {
+    "url": "https://github.com/gullerya/websocket-verifie/issues",
+    "email": "gullerya@gmail.com"
+  },
+  "license": "APACHE 2.0",
+  "files": [
+    "dist"
+  ],
+  "main": "main.js",
+  "author": {
+    "name": "Guller Yuri",
+    "email": "gullerya@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gullerya/websocket-verifier"
+  },
+  "scripts": {},
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^5.7.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "eslint-config-standard": "^12.0.0",
+    "fs-extra": "^7.0.0"
+  }
+}
