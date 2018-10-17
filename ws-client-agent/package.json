@@ -32,7 +32,9 @@
     "url": "https://github.com/gullerya/websocket-verifier"
   },
   "scripts": {},
-  "dependencies": {},
+  "dependencies": {
+    "ws": "^6.1.0"
+  },
   "devDependencies": {
     "eslint": "^5.7.0",
     "eslint-plugin-node": "^7.0.1",

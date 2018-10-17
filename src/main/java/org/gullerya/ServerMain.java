@@ -27,12 +27,13 @@ public class ServerMain {
 
 		//  HTTP servlet
 		ServletContextHandler httpServletContextHandler = new ServletContextHandler();
+		httpServletContextHandler.setContextPath("/api");
 		httpServletContextHandler.addServlet(BaseHttpServlet.class, "/status");
-		server.setHandler(httpServletContextHandler);
 
 		//  WS/WSS
-		ServletContextHandler wsServletContextHandler = new ServletContextHandler();
-		wsServletContextHandler.addServlet(BaseWsServlet.class, "/messages");
+		ServletContextHandler wsServletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		wsServletContextHandler.setContextPath("/messaging");
+		wsServletContextHandler.addServlet(BaseWsServlet.class, "/test");
 
 		server.setHandler(new HandlerList(httpServletContextHandler, wsServletContextHandler));
 		server.start();
