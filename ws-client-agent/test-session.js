@@ -13,7 +13,7 @@ module.exports = class TestSession {
 		//	ensure options
 		this.options = Object.assign({
 			wsUrl: 'ws://localhost:8686/messaging/test',
-			threeMinCycles: 1,
+			threeMinutesCycles: 1,
 			maxErrors: 5
 		}, options);
 		this.finished = false;
@@ -32,7 +32,6 @@ module.exports = class TestSession {
 		this.ws.on('open', () => this.onOpen());
 		this.ws.on('close', () => this.onClose());
 		this.ws.on('error', error => this.onError(error));
-		this.ws.on('message', data => this.onMessage(data));
 	}
 
 	onOpen() {
@@ -56,30 +55,40 @@ module.exports = class TestSession {
 		}
 	}
 
-	onMessage(data) {
-		this.log(data);
-	}
-
 	async runTestPlan() {
 		this.log(logMessage('INFO', 'session started'));
 		this.connect();
 
 		try {
-			while (this.options.threeMinCycles--) {
+			let cnt = 1;
+			while (this.options.threeMinutesCycles--) {
+				this.log(logMessage('INFO', 'CYCLE START: stating 3 minutes cycle no. ' + cnt));
+
 				this.log(logMessage('INFO', 'waiting 10 secs...'));
 				await sleep(10000);
+				this.log(logMessage('INFO', 'sending small text message'));
 				this.ws.send('textToReturn:Hello World', {binary: false});
 
 				this.log(logMessage('INFO', 'waiting 20 secs...'));
 				await sleep(20000);
-				this.ws.send(Int8Array.from([128].concat(new Array(128 * 1024).fill(64, 0, 128 * 1024))), {binary: true});
+				this.log(logMessage('INFO', 'sending 128K binary'));
+				this.ws.send(Int8Array.from([0, 128].concat(new Array(128 * 1024).fill(64, 0, 128 * 1024))), {binary: true});
 
 				this.log(logMessage('INFO', 'waiting 40 secs...'));
 				await sleep(40000);
-				this.ws.send('textToReturn:' + 'lengthy text repeated '.repeat(1000), {binary: false});
+				this.log(logMessage('INFO', 'sending 128K character text'));
+				this.ws.send('textToReturn:' + 'y'.repeat(128000), {binary: false});
 
 				this.ws.send(Int8Array.of(110), {binary: true});
-				//	receive back (this ends cycle of 3 mins)
+				await new Promise((res) => {
+					this.ws.on('message', data => {
+						console.log(data);
+						this.ws.removeAllListeners('message');
+						res();
+					});
+				});
+
+				this.log(logMessage('INFO', 'CYCLE END: cycle no. ' + cnt++ + ' finished'));
 			}
 		} catch (e) {
 			console.error('TestSession failed with ', e);
@@ -108,7 +117,7 @@ function logMessage(type, content) {
 }
 
 async function sleep(millisToSleep) {
-	await new Promise((res, rej) => {
+	await new Promise(res => {
 		setTimeout(res, millisToSleep);
 	});
 }
