@@ -1,9 +1,11 @@
 const
 	os = require('os'),
 	fs = require('fs'),
+	url = require('url'),
 	path = require('path'),
 	fsEx = require('fs-extra'),
-	WebSocket = require('ws');
+	WebSocket = require('ws'),
+	HttpsProxyAgent = require('https-proxy-agent');
 
 module.exports = class TestSession {
 	constructor(options) {
@@ -29,7 +31,13 @@ module.exports = class TestSession {
 	}
 
 	connect() {
-		this.ws = new WebSocket(this.options.url);
+		if (this.options.proxy) {
+			this.ws = new WebSocket(this.options.url, {
+				agent: new HttpsProxyAgent(url.parse(this.options.proxy))
+			});
+		} else {
+			this.ws = new WebSocket(this.options.url);
+		}
 		this.ws.on('open', () => this.onOpen());
 		this.ws.on('close', () => this.onClose());
 		this.ws.on('error', error => this.onError(error));
