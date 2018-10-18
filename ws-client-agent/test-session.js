@@ -64,21 +64,25 @@ module.exports = class TestSession {
 		this.log(logMessage('INFO', 'session started'));
 		this.connect();
 
-		while (this.options.threeMinCycles--) {
-			this.log(logMessage('INFO', 'waiting 10 secs...'));
-			await sleep(10000);
-			this.ws.send('textToReturn:Hello World', {binary: false});
+		try {
+			while (this.options.threeMinCycles--) {
+				this.log(logMessage('INFO', 'waiting 10 secs...'));
+				await sleep(10000);
+				this.ws.send('textToReturn:Hello World', {binary: false});
 
-			this.log(logMessage('INFO', 'waiting 20 secs...'));
-			await sleep(20000);
-			this.ws.send(Int32Array.of(1, 2, 4, 8, 16, 32, 64, 128, 256, 1024, 2048, 4096, 8192, 16384, 32768, 65536), {binary: true});
+				this.log(logMessage('INFO', 'waiting 20 secs...'));
+				await sleep(20000);
+				this.ws.send(Int8Array.from([128].concat(new Array(128 * 1024).fill(64, 0, 128 * 1024))), {binary: true});
 
-			this.log(logMessage('INFO', 'waiting 40 secs...'));
-			await sleep(40000);
-			this.ws.send('textToReturn:' + 'lengthy text repeated '.repeat(1000), {binary: false});
+				this.log(logMessage('INFO', 'waiting 40 secs...'));
+				await sleep(40000);
+				this.ws.send('textToReturn:' + 'lengthy text repeated '.repeat(1000), {binary: false});
 
-			this.ws.send(Int8Array.of(110), {binary: true});
-			//	receive back (this ends cycle of 3 mins)
+				this.ws.send(Int8Array.of(110), {binary: true});
+				//	receive back (this ends cycle of 3 mins)
+			}
+		} catch (e) {
+			console.error('TestSession failed with ', e);
 		}
 
 		this.end();
@@ -92,6 +96,8 @@ module.exports = class TestSession {
 			} else {
 				this.ws.close(1000, 'done' + (this.errors.length ? (' (errors: ' + JSON.stringify(this.errors) + ')') : ''));
 			}
+		} else if (this.ws.readyState === this.ws.CONNECTING) {
+			this.ws.terminate();
 		}
 		this.log(logMessage('INFO', 'session finished'));
 	}
