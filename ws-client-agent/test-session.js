@@ -1,4 +1,5 @@
 const
+	os = require('os'),
 	fs = require('fs'),
 	path = require('path'),
 	fsEx = require('fs-extra'),
@@ -20,11 +21,11 @@ module.exports = class TestSession {
 		this.errors = [];
 
 		//	init logger
-		let sessionLogFile = 'session-' + new Date().toISOString().substr(0, 19).replace(/:/g, '-') + '.log',
-			sessionLogPath = path.join('.', 'sessions', sessionLogFile);
-		fsEx.ensureFileSync(sessionLogPath);
-		this.log = new console.Console(fs.createWriteStream(sessionLogPath)).log;
-		this.log(logMessage('INFO', 'TestSessions initialized with effective options: ' + JSON.stringify(this.options)));
+		this.sessionLogFile = 'session-' + new Date().toISOString().substr(0, 19).replace(/:/g, '-') + '.log';
+		this.sessionLogPath = path.join('.', 'sessions', this.sessionLogFile);
+		fsEx.ensureFileSync(this.sessionLogPath);
+		this.log = new console.Console(fs.createWriteStream(this.sessionLogPath)).log;
+		this.log(logMessage('INFO', 'TestSessions initialized with effective options:' + os.EOL + JSON.stringify(this.options, null, 4)));
 	}
 
 	connect() {
@@ -135,6 +136,7 @@ module.exports = class TestSession {
 
 		this.end();
 		return {
+			logPath: this.sessionLogPath,
 			errors: this.errors
 		};
 	}

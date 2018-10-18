@@ -8,10 +8,11 @@ const testSession = new TestSession(options);
 
 console.log('starting TestSession...');
 testSession.runTestPlan()
-	.then(data => {
-		console.log('done with ' + data.errors.length + ' errors');
-		if (data.errors.length) {
-			console.log(JSON.stringify(data, null, 4));
+	.then(report => {
+		console.log('done with ' + report.errors.length + ' errors');
+		if (report.errors.length) {
+			console.log(JSON.stringify(report, null, 4));
 		}
+		console.log('for the full report see "' + report.logPath + '"');
 	})
 	.catch(e => console.error('TestSession failed with ', e));
