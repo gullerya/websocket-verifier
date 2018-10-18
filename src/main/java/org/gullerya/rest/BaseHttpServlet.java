@@ -1,4 +1,4 @@
-package org.gullerya;
+package org.gullerya.rest;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

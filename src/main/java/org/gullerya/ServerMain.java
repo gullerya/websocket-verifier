@@ -10,6 +10,8 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.gullerya.rest.BaseHttpServlet;
+import org.gullerya.messaging.BaseWebSocketServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +34,7 @@ public class ServerMain {
 
 		//  add WS servlet
 		ServletContextHandler wsServletContextHandler = new ServletContextHandler(null, "/messaging", ServletContextHandler.SESSIONS);
-		wsServletContextHandler.addServlet(BaseWsServlet.class, "/test");
+		wsServletContextHandler.addServlet(BaseWebSocketServlet.class, "/test");
 
 		server.setHandler(new HandlerList(httpServletContextHandler, wsServletContextHandler));
 		server.start();

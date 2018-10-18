@@ -1,4 +1,4 @@
-package org.gullerya;
+package org.gullerya.messaging;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
