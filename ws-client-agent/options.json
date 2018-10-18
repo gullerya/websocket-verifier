@@ -1,4 +1,4 @@
 {
-  "wsUrl": "wss://localhost:8686/messaging/test",
-  "threeMinutesCycles": 1
+  "url": "wss://localhost:8686/messaging/test",
+  "threeMinutesCycles": 2
 }
