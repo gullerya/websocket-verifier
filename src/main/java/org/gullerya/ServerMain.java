@@ -21,6 +21,10 @@ public class ServerMain {
 	public static void main(String[] args) throws Exception {
 		//  obtain configuration
 		Configurer.Configuration configuration = Configurer.getConfiguration();
+		new ServerMain(configuration);
+	}
+
+	ServerMain(Configurer.Configuration configuration) throws Exception {
 		logger.info("server will be running with the following configuration: " + configuration);
 
 		//  init server
