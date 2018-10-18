@@ -134,6 +134,9 @@ module.exports = class TestSession {
 		}
 
 		this.end();
+		return {
+			errors: this.errors
+		};
 	}
 
 	end() {
