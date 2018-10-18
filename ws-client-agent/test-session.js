@@ -49,9 +49,8 @@ module.exports = class TestSession {
 	onError(error) {
 		this.errors.push(error);
 		this.log(logMessage('FAIL', 'WS error ' + this.errors.length + ' of max ' + this.options.maxErrors + ' - ' + error));
-		if (this.errors.length >= this.options.maxErrors) {
+		if (this.errors.length === this.options.maxErrors) {
 			this.log(logMessage('FAIL', '\trun out of max errors (' + this.options.maxErrors + '), exiting'));
-			this.finished = true;
 			this.end();
 		}
 	}
@@ -63,14 +62,17 @@ module.exports = class TestSession {
 	runTestPlan() {
 		this.log(logMessage('INFO', 'session started'));
 		this.connect();
+
+
 	}
 
 	end() {
+		this.finished = true;
 		if (this.ws.readyState === this.ws.OPEN) {
-			if (this.errors.length) {
-				this.ws.close(1011, 'exiting due to max (' + this.options.maxErrors + ') encountered');
+			if (this.errors.length === this.options.maxErrors) {
+				this.ws.close(1011, 'exiting due to max (' + this.options.maxErrors + ') encountered; errors: ' + JSON.stringify(this.errors));
 			} else {
-				this.ws.close(1000, 'done');
+				this.ws.close(1000, 'done' + (this.errors.length ? (' (errors: ' + JSON.stringify(this.errors) + ')') : ''));
 			}
 		}
 		this.log(logMessage('INFO', 'session finished'));
