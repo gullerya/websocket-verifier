@@ -13,6 +13,7 @@ module.exports = class TestSession {
 		//	ensure options
 		this.options = Object.assign({
 			wsUrl: 'ws://localhost:8686/messaging/test',
+			threeMinCycles: 1,
 			maxErrors: 5
 		}, options);
 		this.finished = false;
@@ -59,11 +60,28 @@ module.exports = class TestSession {
 		this.log(data);
 	}
 
-	runTestPlan() {
+	async runTestPlan() {
 		this.log(logMessage('INFO', 'session started'));
 		this.connect();
 
+		while (this.options.threeMinCycles--) {
+			this.log(logMessage('INFO', 'waiting 10 secs...'));
+			await sleep(10000);
+			this.ws.send('textToReturn:Hello World', {binary: false});
 
+			this.log(logMessage('INFO', 'waiting 20 secs...'));
+			await sleep(20000);
+			this.ws.send(Int32Array.of(1, 2, 4, 8, 16, 32, 64, 128, 256, 1024, 2048, 4096, 8192, 16384, 32768, 65536), {binary: true});
+
+			this.log(logMessage('INFO', 'waiting 40 secs...'));
+			await sleep(40000);
+			this.ws.send('textToReturn:' + 'lengthy text repeated '.repeat(1000), {binary: false});
+
+			this.ws.send(Int8Array.of(110), {binary: true});
+			//	receive back (this ends cycle of 3 mins)
+		}
+
+		this.end();
 	}
 
 	end() {
@@ -81,4 +99,10 @@ module.exports = class TestSession {
 
 function logMessage(type, content) {
 	return new Date().toISOString() + ' ' + type + ' ' + content;
+}
+
+async function sleep(millisToSleep) {
+	await new Promise((res, rej) => {
+		setTimeout(res, millisToSleep);
+	});
 }
