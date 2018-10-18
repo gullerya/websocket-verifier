@@ -19,20 +19,19 @@ public class ServerMain {
 	public static void main(String[] args) throws Exception {
 		//  obtain configuration
 		Configurer.Configuration configuration = Configurer.getConfiguration();
+		logger.info("server will be running with the following configuration: " + configuration);
 
 		//  init server
 		Server server = new Server();
 		addHttpConnector(server, configuration.getHttpPort());
 		addSslConnector(server, configuration.getHttpsPort());
 
-		//  HTTP servlet
-		ServletContextHandler httpServletContextHandler = new ServletContextHandler();
-		httpServletContextHandler.setContextPath("/api");
+		//  add HTTP servlet
+		ServletContextHandler httpServletContextHandler = new ServletContextHandler(null, "/rest");
 		httpServletContextHandler.addServlet(BaseHttpServlet.class, "/status");
 
-		//  WS/WSS
-		ServletContextHandler wsServletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		wsServletContextHandler.setContextPath("/messaging");
+		//  add WS servlet
+		ServletContextHandler wsServletContextHandler = new ServletContextHandler(null, "/messaging", ServletContextHandler.SESSIONS);
 		wsServletContextHandler.addServlet(BaseWsServlet.class, "/test");
 
 		server.setHandler(new HandlerList(httpServletContextHandler, wsServletContextHandler));

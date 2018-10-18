@@ -8,14 +8,14 @@ import org.slf4j.LoggerFactory;
  * - support configuration by properties file
  * - support configuration be system properties
  */
-public class Configurer {
+class Configurer {
 	private static final Logger logger = LoggerFactory.getLogger(Configurer.class);
 
-	public static Configuration getConfiguration() {
+	static Configuration getConfiguration() {
 		return Configuration.INSTANCE;
 	}
 
-	public static final class Configuration {
+	static final class Configuration {
 		private static final Configuration INSTANCE = new Configuration();
 		private final int httpPort;
 		private final int httpsPort;
@@ -25,12 +25,20 @@ public class Configurer {
 			httpsPort = 8686;
 		}
 
-		public int getHttpPort() {
+		int getHttpPort() {
 			return httpPort;
 		}
 
-		public int getHttpsPort() {
+		int getHttpsPort() {
 			return httpsPort;
+		}
+
+		@Override
+		public String toString() {
+			return "Configuration{" +
+					"httpPort=" + httpPort +
+					", httpsPort=" + httpsPort +
+					'}';
 		}
 	}
 }
