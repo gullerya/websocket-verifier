@@ -10,6 +10,8 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.gullerya.rest.BaseHttpServlet;
 import org.gullerya.messaging.BaseWebSocketServlet;
 import org.slf4j.Logger;
@@ -24,7 +26,7 @@ public class ServerMain {
 		new ServerMain(configuration);
 	}
 
-	ServerMain(Configurer.Configuration configuration) throws Exception {
+	private ServerMain(Configurer.Configuration configuration) throws Exception {
 		logger.info("server will be running with the following configuration: " + configuration);
 
 		//  init server
@@ -62,23 +64,26 @@ public class ServerMain {
 		server.addConnector(httpConnector);
 	}
 
-	private static void addSslConnector(Server server, int port) {
-		//  ssl connection factory
-		SslConnectionFactory sslConnectionFactory = new SslConnectionFactory(HttpVersion.HTTP_1_1.asString());
+	private static void addSslConnector(Server server, int port) throws Exception {
+		//  ssl context
+		SslContextFactory sslContextFactory = new SslContextFactory();
+		sslContextFactory.addExcludeProtocols("SSL", "SSLv2", "SSLv2Hello", "SSLv3");
+		sslContextFactory.setRenegotiationAllowed(false);
+		sslContextFactory.setKeyStoreResource(Resource.newClassPathResource("keystore"));
+		sslContextFactory.setKeyStorePassword("87654321");
 
-		//  ssl context?
+		//  ssl connection factory
+		SslConnectionFactory sslConnectionFactory = new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString());
 
 		//  https configuration
-		HttpConfiguration httpsConfiguration = new HttpConfiguration();
-		httpsConfiguration.setCookieCompliance(CookieCompliance.RFC6265);
-		httpsConfiguration.setIdleTimeout(30000);
-
-		//  https connection factory
-		HttpConnectionFactory httpsConnectionFactory = new HttpConnectionFactory(httpsConfiguration, HttpCompliance.RFC7230);
+		HttpConfiguration config = new HttpConfiguration();
+		config.setSecureScheme("https");
+		config.setSecurePort(port);
+		HttpConfiguration sslConfiguration = new HttpConfiguration(config);
+		HttpConnectionFactory httpsConnectionFactory = new HttpConnectionFactory(sslConfiguration);
 
 		//  ssl connector
-		ServerConnector httpsConnector = new ServerConnector(server, httpsConnectionFactory);
-		httpsConnector.addConnectionFactory(sslConnectionFactory);
+		ServerConnector httpsConnector = new ServerConnector(server, sslConnectionFactory, httpsConnectionFactory);
 		httpsConnector.getSelectorManager().setConnectTimeout(15000);
 		httpsConnector.setPort(port);
 		server.addConnector(httpsConnector);

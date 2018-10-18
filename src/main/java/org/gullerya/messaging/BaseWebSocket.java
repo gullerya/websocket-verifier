@@ -2,7 +2,9 @@ package org.gullerya.messaging;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
+@WebSocket(maxIdleTime = Integer.MAX_VALUE)
 public class BaseWebSocket extends WebSocketAdapter {
 
 	@Override

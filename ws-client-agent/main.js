@@ -1,7 +1,9 @@
-const WebSocket = require('ws');
+const
+	TestSession = require('./test-session.js'),
+	options = require('./options.json');
 
-const ws = new WebSocket('ws://localhost:8585/messaging/test');
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-ws.on('open', function open() {
-	ws.send('ping');
-});
+const testSession = new TestSession(options);
+
+testSession.runTestPlan();
