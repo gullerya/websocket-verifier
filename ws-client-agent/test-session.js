@@ -1,7 +1,6 @@
 const
 	os = require('os'),
 	fs = require('fs'),
-	url = require('url'),
 	path = require('path'),
 	fsEx = require('fs-extra'),
 	WebSocket = require('ws'),
@@ -31,13 +30,11 @@ module.exports = class TestSession {
 	}
 
 	connect() {
-		if (this.options.proxy) {
-			this.ws = new WebSocket(this.options.url, {
-				agent: new HttpsProxyAgent(url.parse(this.options.proxy))
-			});
-		} else {
-			this.ws = new WebSocket(this.options.url);
-		}
+		let options = {
+			agent: this.options.proxy ? new HttpsProxyAgent(this.options.proxy) : null
+		};
+
+		this.ws = new WebSocket(this.options.url, null, options);
 		this.ws.on('open', () => this.onOpen());
 		this.ws.on('close', () => this.onClose());
 		this.ws.on('error', error => this.onError(error));
