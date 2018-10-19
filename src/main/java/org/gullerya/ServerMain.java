@@ -34,15 +34,15 @@ public class ServerMain {
 		addHttpConnector(server, configuration.getHttpPort());
 		addSslConnector(server, configuration.getHttpsPort());
 
-		//  add HTTP servlet
-		ServletContextHandler httpServletContextHandler = new ServletContextHandler(null, "/rest");
-		httpServletContextHandler.addServlet(BaseHttpServlet.class, "/status");
-
 		//  add WS servlet
 		ServletContextHandler wsServletContextHandler = new ServletContextHandler(null, "/messaging", ServletContextHandler.SESSIONS);
 		wsServletContextHandler.addServlet(BaseWebSocketServlet.class, "/test");
 
-		server.setHandler(new HandlerList(httpServletContextHandler, wsServletContextHandler));
+		//  add HTTP servlet
+		ServletContextHandler httpServletContextHandler = new ServletContextHandler(null, "/");
+		httpServletContextHandler.addServlet(BaseHttpServlet.class, "/");
+
+		server.setHandler(new HandlerList(wsServletContextHandler, httpServletContextHandler));
 		server.start();
 		//server.dumpStdErr();
 		server.join();
