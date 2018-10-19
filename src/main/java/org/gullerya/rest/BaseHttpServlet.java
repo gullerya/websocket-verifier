@@ -15,14 +15,15 @@ public class BaseHttpServlet extends HttpServlet {
 		Request request = (Request) req;
 		if ("/".equals(request.getHttpURI().getPath())) {
 			resp.setStatus(200);
-			resp.flushBuffer();
 		} else if ("/status".equals(request.getHttpURI().getPath())) {
 			resp.setStatus(200);
 			resp.getWriter().write(
 					"status: good" + System.lineSeparator() +
 							"sessions: " + BaseWebSocket.sessions.size()
 			);
-			resp.flushBuffer();
+		} else {
+			resp.setStatus(404);
 		}
+		resp.flushBuffer();
 	}
 }
