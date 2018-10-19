@@ -64,7 +64,7 @@ public class ServerMain {
 		server.addConnector(httpConnector);
 	}
 
-	private static void addSslConnector(Server server, int port) throws Exception {
+	private static void addSslConnector(Server server, int port) {
 		//  ssl context
 		SslContextFactory sslContextFactory = new SslContextFactory();
 		sslContextFactory.addExcludeProtocols("SSL", "SSLv2", "SSLv2Hello", "SSLv3");
