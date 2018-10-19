@@ -1,5 +1,5 @@
 {
-  "url": "wss://localhost:8686/messaging/test",
+  "url": "wss://localhost:8086/messaging/test",
   "proxy": null,
   "threeMinutesCycles": 2
 }

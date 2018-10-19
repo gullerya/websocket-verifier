@@ -14,7 +14,7 @@ module.exports = class TestSession {
 
 		//	ensure options
 		this.options = Object.assign({
-			url: 'ws://localhost:8686/messaging/test',
+			url: 'wss://localhost:8086/messaging/test',
 			threeMinutesCycles: 1,
 			maxErrors: 5
 		}, options);
