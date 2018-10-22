@@ -1,0 +1,5 @@
+{
+  "url": "wss://localhost:8086/messaging/test",
+  "proxy": "http://some.host:8080",
+  "threeMinutesCycles": 2
+}
