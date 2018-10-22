@@ -38,6 +38,9 @@ module.exports = class TestSession {
 		this.ws.on('open', () => this.onOpen());
 		this.ws.on('close', () => this.onClose());
 		this.ws.on('error', error => this.onError(error));
+		this.pinger = setInterval(() =>
+				this.ws.ping(),
+			15000);
 	}
 
 	onOpen() {
@@ -148,6 +151,7 @@ module.exports = class TestSession {
 
 	end() {
 		this.finished = true;
+		clearInterval(this.pinger);
 		if (this.ws.readyState === this.ws.OPEN) {
 			if (this.errors.length === this.options.maxErrors) {
 				this.ws.close(1011, 'exiting due to max (' + this.options.maxErrors + ') encountered; errors: ' + JSON.stringify(this.errors));

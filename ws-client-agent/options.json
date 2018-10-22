@@ -1,5 +1,5 @@
 {
-  "url": "wss://localhost:8086/messaging/test",
-  "proxy": null,
-  "threeMinutesCycles": 2
+  "url": "wss://dreamforce.almoctane.com:8443/messaging/test",
+  "proxy": "http://web-proxy.il.hpecorp.net:8080",
+  "threeMinutesCycles": 40
 }
